@@ -1,3 +1,5 @@
+### 官方声明
+
 ![](cover.png)
 
 **A set of challenges to hack implementations of DeFi in Ethereum.**
@@ -15,3 +17,8 @@ Visit [damnvulnerabledefi.xyz](https://damnvulnerabledefi.xyz)
 All Solidity code, practices and patterns in this repository are DAMN VULNERABLE and for educational purposes only.
 
 DO NOT USE IN PRODUCTION.
+
+
+### 笔记
+
+

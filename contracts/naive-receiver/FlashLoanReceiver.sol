@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/Address.sol";
 
+
 /**
  * @title FlashLoanReceiver
  * @author Damn Vulnerable DeFi (https://damnvulnerabledefi.xyz)
@@ -32,7 +33,9 @@ contract FlashLoanReceiver {
     }
 
     // Internal function where the funds received are used
-    function _executeActionDuringFlashLoan() internal { }
+    function _executeActionDuringFlashLoan() internal {
+
+     }
 
     // Allow deposits of ETH
     receive () external payable {}

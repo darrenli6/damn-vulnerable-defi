@@ -7,6 +7,15 @@ import "@openzeppelin/contracts/utils/Address.sol";
 /**
  * @title NaiveReceiverLenderPool
  * @author Damn Vulnerable DeFi (https://damnvulnerabledefi.xyz)
+
+Challenge #2 - Naive receiver
+There's a lending pool offering quite expensive flash loans of Ether, which has 1000 ETH in balance.
+
+You also see that a user has deployed a contract with 10 ETH in balance, capable of interacting with the lending pool and receiveing flash loans of ETH.
+
+Drain all ETH funds from the user's contract. Doing it in a single transaction is a big plus ;)
+
+
  */
 contract NaiveReceiverLenderPool is ReentrancyGuard {
 
@@ -18,6 +27,7 @@ contract NaiveReceiverLenderPool is ReentrancyGuard {
         return FIXED_FEE;
     }
 
+// 闪电贷
     function flashLoan(address borrower, uint256 borrowAmount) external nonReentrant {
 
         uint256 balanceBefore = address(this).balance;
@@ -26,6 +36,9 @@ contract NaiveReceiverLenderPool is ReentrancyGuard {
 
         require(borrower.isContract(), "Borrower must be a deployed contract");
         // Transfer ETH and handle control to receiver
+       // borrowAmount 转成以太
+       // bytes
+       // data receiveEther(uint256)
         borrower.functionCallWithValue(
             abi.encodeWithSignature(
                 "receiveEther(uint256)",
