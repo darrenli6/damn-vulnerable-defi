@@ -10,9 +10,12 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
  * @author Damn Vulnerable DeFi (https://damnvulnerabledefi.xyz)
  * @notice A limited pseudo-ERC20 token to keep track of deposits and withdrawals
  *         with snapshotting capabilities
+
+ 计算代币
  */
 contract AccountingToken is ERC20Snapshot, AccessControl {
 
+// 三个身份
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     bytes32 public constant SNAPSHOT_ROLE = keccak256("SNAPSHOT_ROLE");
     bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");

@@ -12,6 +12,8 @@ contract SimpleGovernance {
 
     using Address for address;
     
+
+    //
     struct GovernanceAction {
         address receiver;
         bytes data;
@@ -20,15 +22,18 @@ contract SimpleGovernance {
         uint256 executedAt;
     }
     
+
     DamnValuableTokenSnapshot public governanceToken;
 
     mapping(uint256 => GovernanceAction) public actions;
     uint256 private actionCounter;
+    // 2天
     uint256 private ACTION_DELAY_IN_SECONDS = 2 days;
 
     event ActionQueued(uint256 actionId, address indexed caller);
     event ActionExecuted(uint256 actionId, address indexed caller);
 
+//
     constructor(address governanceTokenAddress) {
         require(governanceTokenAddress != address(0), "Governance token cannot be zero address");
         governanceToken = DamnValuableTokenSnapshot(governanceTokenAddress);
@@ -53,6 +58,8 @@ contract SimpleGovernance {
         return actionId;
     }
 
+
+// 执行
     function executeAction(uint256 actionId) external payable {
         require(_canBeExecuted(actionId), "Cannot execute this action");
         

@@ -19,6 +19,8 @@ contract SelfiePool is ReentrancyGuard {
 
     event FundsDrained(address indexed receiver, uint256 amount);
 
+
+//  只能由自己
     modifier onlyGovernance() {
         require(msg.sender == address(governance), "Only governance can execute this action");
         _;
@@ -29,12 +31,14 @@ contract SelfiePool is ReentrancyGuard {
         governance = SimpleGovernance(governanceAddress);
     }
 
+
     function flashLoan(uint256 borrowAmount) external nonReentrant {
         uint256 balanceBefore = token.balanceOf(address(this));
         require(balanceBefore >= borrowAmount, "Not enough tokens in pool");
         
         token.transfer(msg.sender, borrowAmount);        
         
+        // call back
         require(msg.sender.isContract(), "Sender must be a deployed contract");
         msg.sender.functionCall(
             abi.encodeWithSignature(
@@ -49,8 +53,10 @@ contract SelfiePool is ReentrancyGuard {
         require(balanceAfter >= balanceBefore, "Flash loan hasn't been paid back");
     }
 
+// 
     function drainAllFunds(address receiver) external onlyGovernance {
         uint256 amount = token.balanceOf(address(this));
+        // 拿走
         token.transfer(receiver, amount);
         
         emit FundsDrained(receiver, amount);

@@ -12,6 +12,7 @@ contract DamnValuableTokenSnapshot is ERC20Snapshot {
     
     uint256 private lastSnapshotId;
 
+// 有构造方法
     constructor(uint256 initialSupply) ERC20("DamnValuableToken", "DVT") {
         _mint(msg.sender, initialSupply);
     }

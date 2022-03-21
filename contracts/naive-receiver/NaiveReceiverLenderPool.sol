@@ -28,6 +28,7 @@ contract NaiveReceiverLenderPool is ReentrancyGuard {
     }
 
 // 闪电贷
+// 借款人  借款数额
     function flashLoan(address borrower, uint256 borrowAmount) external nonReentrant {
 
         uint256 balanceBefore = address(this).balance;
@@ -39,6 +40,7 @@ contract NaiveReceiverLenderPool is ReentrancyGuard {
        // borrowAmount 转成以太
        // bytes
        // data receiveEther(uint256)
+       //
         borrower.functionCallWithValue(
             abi.encodeWithSignature(
                 "receiveEther(uint256)",
@@ -54,5 +56,6 @@ contract NaiveReceiverLenderPool is ReentrancyGuard {
     }
 
     // Allow deposits of ETH
+    // 接受eth的空函数
     receive () external payable {}
 }

